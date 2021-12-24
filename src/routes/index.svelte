@@ -4,7 +4,7 @@
 <script lang="ts">
 	import { beforeUpdate, onMount } from 'svelte';
 	import SettingsIcon from '../settings.svg'
-	import { fade } from 'svelte/transition';
+	import { fly, slide } from 'svelte/transition';
 
 	let font = 'monospace';
 	let fontSize = 16;
@@ -83,7 +83,7 @@
 	beforeUpdate(() => {
 		if (c) {
 			const newCols = windowWidth / fontSize;
-			if(columns !== newCols) {
+			if (columns !== newCols) {
 				c.height = windowHeight;
 				c.width = windowWidth;
 	
@@ -92,6 +92,7 @@
 			}
 		}
 	});
+
  /**
 	* Bring the drops back up to the top
 	*/
@@ -109,7 +110,7 @@
 		c.height = windowHeight;
 		c.width = windowWidth;
 
-		columns = c.width / fontSize; //number of columns for the rain
+		columns = c.width / fontSize;
 
 		initialiseDrops();
 		
@@ -122,7 +123,6 @@
 		showMenu = !showMenu
 	}
 
-	//drawing the characters
 	function draw() {
 		ctx.fillStyle = colorSchemes[colorSchemeIdx].bgColor;
 		ctx.fillRect(0, 0, c.width, c.height);
@@ -151,11 +151,9 @@
 
 			ctx.fillText(text, i * fontSize, drops[i] * fontSize);
 
-			//sending the drop back to the top randomly after it has crossed the screen
-			//adding a randomness to the reset to make the drops scattered on the Y axis
+			// sending the drop back to the top randomly after it has crossed the screen
 			if (drops[i] * fontSize > c.height && Math.random() > 0.975) drops[i] = 0;
 
-			//incrementing Y coordinate
 			drops[i]++;
 		}
 	}
@@ -171,7 +169,7 @@
 		<SettingsIcon />
 	</button>
 	{#if showMenu}
-	<div class="menu" in:fade out:fade>
+	<div class="menu" transition:fly="{{x: 200, duration: 500}}">
 		<div class="buttons">
 			<button class={colorSchemeIdx === 1 && 'active'} on:click={() => colorSchemeIdx = 1}>Matrix</button>
 			<button class={colorSchemeIdx === 0 && 'active'} on:click={() => colorSchemeIdx = 0}>Xmas</button>
@@ -206,11 +204,12 @@
 	.menu button {
 		padding: 1rem;
 		height: 2rem;
+		transition: all 300ms ease;
+		box-shadow: none;
 	}
 	
 	.menu button.active {
-		box-shadow: 0 0 0 1px grey;
-		border-radius: .5rem;
+		box-shadow: inset 0 -4px 0 0 grey;
 	}
 
 	.icon {
@@ -231,11 +230,11 @@
 		position: absolute;
 		top: 1rem;
 		right: 1rem;
-		padding-top: 2.5rem;
+		padding-right: 2.5rem;
 		background: aliceblue;
+		border-bottom-right-radius: 1rem;
 		border-top-right-radius: 1rem;
-		height: 5rem;
-		width: 10rem;
+
 		display: flex;
 		justify-content: space-around;
 	}
