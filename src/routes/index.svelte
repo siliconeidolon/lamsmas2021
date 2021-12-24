@@ -1,6 +1,10 @@
+<svelte:head>
+	<title>lamsmas2021</title>
+</svelte:head>
 <script lang="ts">
 	import { beforeUpdate, onMount } from 'svelte';
 	import SettingsIcon from '../settings.svg'
+	import { fade } from 'svelte/transition';
 
 	let font = 'monospace';
 	let fontSize = 16;
@@ -11,8 +15,7 @@
 	let ctx: CanvasRenderingContext2D;
 	let columns;
 	let drops = [];
-
-	// controls
+	let showMenu = false
 	let colorSchemeIdx = 0;
 
 	interface ColorScheme {
@@ -79,21 +82,25 @@
 
 	beforeUpdate(() => {
 		if (c) {
-			c.height = windowHeight;
-			c.width = windowWidth;
-
-			columns = c.width / fontSize;
-			initialiseDrops();
+			const newCols = windowWidth / fontSize;
+			if(columns !== newCols) {
+				c.height = windowHeight;
+				c.width = windowWidth;
+	
+				columns = newCols;
+				initialiseDrops();
+			}
 		}
 	});
-
-	//an array of drops - one per column
-	//1 = y co-ordinate of the drop(same for every drop initially)
+ /**
+	* Bring the drops back up to the top
+	*/
 	const initialiseDrops = () => {
 		for (let x = 0; x < columns; x++) {
 			drops[x] = 1;
 		}
 	};
+
 	onMount(() => {
 		c = <HTMLCanvasElement>document.getElementById('c');
 		ctx = c.getContext('2d');
@@ -105,11 +112,15 @@
 		columns = c.width / fontSize; //number of columns for the rain
 
 		initialiseDrops();
-
+		
 		if (c) {
 			setInterval(draw, interval);
 		}
 	});
+
+	function toggleMenu() {
+		showMenu = !showMenu
+	}
 
 	//drawing the characters
 	function draw() {
@@ -156,9 +167,19 @@
 />
 
 <body style={`background: ${colorSchemes[colorSchemeIdx].bgColor}`}>
-	<div class="icon">
+	<button class="icon" on:click={toggleMenu}>
 		<SettingsIcon />
+	</button>
+	{#if showMenu}
+	<div class="menu" in:fade out:fade>
+		<div class="buttons">
+			<button class={colorSchemeIdx === 1 && 'active'} on:click={() => colorSchemeIdx = 1}>Matrix</button>
+			<button class={colorSchemeIdx === 0 && 'active'} on:click={() => colorSchemeIdx = 0}>Xmas</button>
+		</div>
+
 	</div>
+{/if}
+
 	<canvas id="c" />
 </body>
 
@@ -173,6 +194,25 @@
 		position: relative;
 	}
 
+	button {
+		outline: none;
+		border: none;
+		cursor: pointer;
+		background: none;
+		align-items: center;
+		display: flex;
+	}
+	
+	.menu button {
+		padding: 1rem;
+		height: 2rem;
+	}
+	
+	.menu button.active {
+		box-shadow: 0 0 0 1px grey;
+		border-radius: .5rem;
+	}
+
 	.icon {
 		position: absolute;
 		top: 1rem;
@@ -183,7 +223,25 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background-color: aliceblue;	
+		background-color: aliceblue;
+		z-index: 1;
+	}
+
+	.menu {
+		position: absolute;
+		top: 1rem;
+		right: 1rem;
+		padding-top: 2.5rem;
+		background: aliceblue;
+		border-top-right-radius: 1rem;
+		height: 5rem;
+		width: 10rem;
+		display: flex;
+		justify-content: space-around;
+	}
+
+	.buttons {
+		display: flex;
 	}
 	canvas {
 		display: block;
