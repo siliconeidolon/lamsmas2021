@@ -2,14 +2,15 @@
 	<title>lamsmas2021</title>
 </svelte:head>
 <script lang="ts">
+	import { chars, matrixChars } from '../data/chars';
 	import { beforeUpdate, onMount } from 'svelte';
 	import SettingsIcon from '../settings.svg'
-	import { fly, slide } from 'svelte/transition';
+	import { fly } from 'svelte/transition';
 
 	let font = 'monospace';
 	let fontSize = 16;
-	let windowHeight;
-	let windowWidth;
+	let windowHeight: number;
+	let windowWidth: number;
 	let interval = 66;
 	let c: HTMLCanvasElement;
 	let ctx: CanvasRenderingContext2D;
@@ -32,53 +33,7 @@
 		colors: ['#03A062']
 	};
 	const colorSchemes: ColorScheme[] = [xmasColors, matrix];
-	const chars = ['M', 'E', 'R', 'R', 'Y', 'C', 'H', 'R', 'I', 'S', 'T', 'M', 'A', 'S'];
-	const matrixChars = [
-		'ﾊ',
-		'ﾐ',
-		'ﾋ',
-		'ｰ',
-		'ｳ',
-		'ｼ',
-		'ﾅ',
-		'ﾓ',
-		'ﾆ',
-		'ｻ',
-		'ﾜ',
-		'ﾂ',
-		'ｵ',
-		'ﾘ',
-		'ｱ',
-		'ﾎ',
-		'ﾃ',
-		'ﾏ',
-		'ｹ',
-		'ﾒ',
-		'ｴ',
-		'ｶ',
-		'ｷ',
-		'ﾑ',
-		'ﾕ',
-		'ﾗ',
-		'ｾ',
-		'ﾈ',
-		'ｽ',
-		'ﾀ',
-		'ﾇ',
-		'ﾍ',
-		'0',
-		'1',
-		'2',
-		'3',
-		'4',
-		'5',
-		'7',
-		'8',
-		'9',
-		'Z',
-		'|',
-		'/'
-	];
+
 
 	beforeUpdate(() => {
 		if (c) {
@@ -137,22 +92,23 @@
 		let charIdx = 0;
 		for (let i = 0; i < drops.length; i++) {
 			let text = '';
+			if (Math.random() < 0.85) {
 			if (colorSchemeIdx === 0) {
 				if (charIdx > chars.length - 1) {
 					charIdx = 0;
 				}
-				if (Math.random() < 0.85) {
 					text = chars[charIdx];
+					charIdx++;
+				} else {
+					text = matrixChars[Math.floor(Math.random() * matrixChars.length)];
 				}
-				charIdx++;
-			} else {
-				text = matrixChars[Math.floor(Math.random() * matrixChars.length)];
 			}
 
 			ctx.fillText(text, i * fontSize, drops[i] * fontSize);
 
-			// sending the drop back to the top randomly after it has crossed the screen
-			if (drops[i] * fontSize > c.height && Math.random() > 0.975) drops[i] = 0;
+			if (drops[i] * fontSize > c.height && Math.random() > 0.975) {
+				drops[i] = 0;
+			}
 
 			drops[i]++;
 		}
@@ -164,7 +120,7 @@
 	bind:innerWidth={windowWidth}
 />
 
-<body style={`background: ${colorSchemes[colorSchemeIdx].bgColor}`}>
+<body>
 	<button class="icon" on:click={toggleMenu}>
 		<SettingsIcon />
 	</button>
@@ -174,11 +130,10 @@
 			<button class={colorSchemeIdx === 1 && 'active'} on:click={() => colorSchemeIdx = 1}>Matrix</button>
 			<button class={colorSchemeIdx === 0 && 'active'} on:click={() => colorSchemeIdx = 0}>Xmas</button>
 		</div>
-
 	</div>
 {/if}
 
-	<canvas id="c" />
+	<canvas id="c" style={`background-color: black`} />
 </body>
 
 <style>
@@ -190,6 +145,7 @@
 
 	body {
 		position: relative;
+		background-color: black;
 	}
 
 	button {
@@ -215,7 +171,7 @@
 	.icon {
 		position: absolute;
 		top: 1rem;
-		right: 1rem;
+		right: 0rem;
 		height: 2rem;
 		width: 2rem;
 		border-radius: 50%;
@@ -229,11 +185,11 @@
 	.menu {
 		position: absolute;
 		top: 1rem;
-		right: 1rem;
+		right: 0rem;
 		padding-right: 2.5rem;
 		background: aliceblue;
-		border-bottom-right-radius: 1rem;
-		border-top-right-radius: 1rem;
+		/* border-bottom-right-radius: 1rem;
+		border-top-right-radius: 1rem; */
 
 		display: flex;
 		justify-content: space-around;
