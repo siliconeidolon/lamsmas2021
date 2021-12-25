@@ -93,16 +93,16 @@
 		for (let i = 0; i < drops.length; i++) {
 			let text = '';
 			if (Math.random() < 0.85) {
-			if (colorSchemeIdx === 0) {
-				if (charIdx > chars.length - 1) {
-					charIdx = 0;
+				if (colorSchemeIdx === 0) {
+					if (charIdx > chars.length - 1) {
+						charIdx = 0;
+					}
+						text = chars[charIdx];
+					} else {
+						text = matrixChars[Math.floor(Math.random() * matrixChars.length)];
+					}
 				}
-					text = chars[charIdx];
-					charIdx++;
-				} else {
-					text = matrixChars[Math.floor(Math.random() * matrixChars.length)];
-				}
-			}
+				charIdx++;
 
 			ctx.fillText(text, i * fontSize, drops[i] * fontSize);
 
