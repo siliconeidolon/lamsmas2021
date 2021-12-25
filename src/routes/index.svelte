@@ -26,7 +26,7 @@
 
 	const xmasColors: ColorScheme = {
 		bgColor: 'rgba(0, 0, 0, 0.05)',
-		colors: ['red', 'green']
+		colors: ['red', '#03A062']
 	};
 	const matrix: ColorScheme = {
 		bgColor: 'rgba(0, 0, 0, 0.05)',
@@ -121,17 +121,17 @@
 />
 
 <body>
-	<button class="icon" on:click={toggleMenu}>
+	<button class="icon" on:click={toggleMenu} title="Show colour options">
 		<SettingsIcon />
 	</button>
 	{#if showMenu}
-	<div class="menu" transition:fly="{{x: 200, duration: 500}}">
-		<div class="buttons">
-			<button class={colorSchemeIdx === 1 && 'active'} on:click={() => colorSchemeIdx = 1}>Matrix</button>
-			<button class={colorSchemeIdx === 0 && 'active'} on:click={() => colorSchemeIdx = 0}>Xmas</button>
+		<div class="menu" transition:fly="{{x: 200, duration: 500}}">
+			<div class="buttons">
+				<button class={colorSchemeIdx === 1 && 'active'} on:click={() => colorSchemeIdx = 1}>Matrix</button>
+				<button class={colorSchemeIdx === 0 && 'active'} on:click={() => colorSchemeIdx = 0}>Xmas</button>
+			</div>
 		</div>
-	</div>
-{/if}
+	{/if}
 
 	<canvas id="c" style={`background-color: black`} />
 </body>
@@ -165,13 +165,13 @@
 	}
 	
 	.menu button.active {
-		box-shadow: inset 0 -4px 0 0 grey;
+		box-shadow: inset 0 -4px 0 0 #03A062;
 	}
 
 	.icon {
 		position: absolute;
 		top: 1rem;
-		right: 0rem;
+		right: .1rem;
 		height: 2rem;
 		width: 2rem;
 		border-radius: 50%;
@@ -188,8 +188,6 @@
 		right: 0rem;
 		padding-right: 2.5rem;
 		background: aliceblue;
-		/* border-bottom-right-radius: 1rem;
-		border-top-right-radius: 1rem; */
 
 		display: flex;
 		justify-content: space-around;
