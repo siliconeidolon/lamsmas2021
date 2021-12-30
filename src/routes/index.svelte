@@ -5,7 +5,7 @@
 	import { chars, matrixChars } from '../data/chars';
 	import { beforeUpdate, onMount } from 'svelte';
 	import SettingsIcon from '../settings.svg'
-	import { fly } from 'svelte/transition';
+	import { fade } from 'svelte/transition';
 
 	let font = 'monospace';
 	let fontSize = 16;
@@ -125,7 +125,7 @@
 		<SettingsIcon />
 	</button>
 	{#if showMenu}
-		<div class="menu" transition:fly="{{x: 200, duration: 500}}">
+		<div class="menu" transition:fade="{{duration: 500}}">
 			<div class="buttons">
 				<button class={colorSchemeIdx === 1 && 'active'} on:click={() => colorSchemeIdx = 1}>Matrix</button>
 				<button class={colorSchemeIdx === 0 && 'active'} on:click={() => colorSchemeIdx = 0}>Xmas</button>
@@ -137,6 +137,9 @@
 </body>
 
 <style>
+	:root {
+		--matrix-green: #03A062;
+	}
 	* {
 		margin: 0;
 		padding: 0;
@@ -165,7 +168,7 @@
 	}
 	
 	.menu button.active {
-		box-shadow: inset 0 -4px 0 0 #03A062;
+		box-shadow: inset 0 -4px 0 0 var(--matrix-green);
 	}
 
 	.icon {
@@ -179,7 +182,13 @@
 		align-items: center;
 		justify-content: center;
 		background-color: aliceblue;
+		border: 1px solid transparent;
+		transition: all 300ms ease;
 		z-index: 1;
+	}
+
+	.icon:hover {
+		border-color: var(--matrix-green);
 	}
 
 	.menu {
